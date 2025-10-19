@@ -14,7 +14,6 @@ import { TextInput, FlatList, ScrollView } from 'react-native-gesture-handler';
 import Switch from 'toggle-switch-react-native';
 // pages
 import ShopByCtg from './ShopByCtg';
-// for testing
 import NotFound from '../components/NotFound';
 // navigation
 import { useNavigation } from '@react-navigation/native';
@@ -79,7 +78,7 @@ const HomePage = () => {
            
             navigation.navigate(matchedCategory.screen); // ✅ dynamic navigation
         } else {
-            Alert.alert('Not Found', `No results for "${query}" `);
+          navigation.navigate('NotFound')
         }
     };
 
@@ -144,11 +143,7 @@ const HomePage = () => {
                 { backgroundColor: isDark ? '#1d182a' : '#ffff' },
             ]}
         >
-            <TouchableOpacity onPress={()=>navigation.navigate('NotFound')}>
-                <Text>
-                    For testing(Not found page )
-                </Text>
-            </TouchableOpacity>
+        
             <ScrollView>
                 {/* Header */}
                 <View style={styles.header}>

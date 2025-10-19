@@ -1,55 +1,57 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, Touchable } from 'react-native';
+import { SafeAreaProviderProps, SafeAreaView } from 'react-native-safe-area-context';
 import { ViewStyle } from 'react-native/types';
 import SearchBar from './SearchBar';
 import BackArrow from '../assets/images/backArrow.svg';
 import { useNavigation } from '@react-navigation/native';
+// Theme
+import { useTheme } from '../context/ThemeContext';
+// Fuse
 import Fuse from 'fuse.js';
+// ✅ Import same categories JSON (as HomePage)
+import categories from '../data/categories.json';
 
-// ⚠️ Temporary data (replace with your real categories & types)
-const categories = [
-  { name: 'T-Shirts', screen: 'TShirtScreen' },
-  { name: 'Jeans', screen: 'JeansScreen' },
-  { name: 'Jackets', screen: 'JacketScreen' },
-];
 
+// ✅ Type same as HomePage
 type ScreenCategory = {
+  id: number;
   name: string;
   screen: string;
 };
 
 const NotFound = () => {
-  const navigation = useNavigation();
+  const { isDark, toggleTheme } = useTheme();
+  const navigation = useNavigation<any>();
   const [query, setQuery] = useState('');
 
-  // 🧠 Fuse instance for fuzzy search
+  // 🧠 Fuse instance for fuzzy search (same config as HomePage)
   const fuse = new Fuse<ScreenCategory>(categories, {
     keys: ['name'],
     threshold: 0.3,
   });
 
-  // 🔍 Search logic
+  // 🔍 Search logic (copied from HomePage)
   const handleSearch = () => {
+    console.log('Searching...');
     const result = fuse.search(query.trim().toLowerCase());
 
     if (result.length > 0) {
       const matchedCategory = result[0].item;
-      // ✅ Dynamic navigation
-      navigation.navigate(matchedCategory.screen as never);
+      navigation.navigate(matchedCategory.screen); // ✅ dynamic navigation
     } else {
       Alert.alert('Not Found', `No results for "${query}"`);
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+    <SafeAreaView style={[styles.container,{ backgroundColor: isDark ? '#1d182a' : '#ffff' }]}>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={{width:0}}>
         <BackArrow />
       </TouchableOpacity>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
+      <View style={[styles.searchContainer]}>
         <SearchBar
           placeholder="Search categories..."
           value={query}
@@ -61,11 +63,11 @@ const NotFound = () => {
       <View style={styles.outerBox}>
         <Image source={require('../assets/images/notFoundSearch.png')} />
         <View style={styles.innerBox as ViewStyle}>
-          <Text style={styles.errorText}>
+          <Text style={[styles.errorText,{color:isDark ? "white":"blacks"}]}>
             Sorry, we couldn't find any matching result for your search.
           </Text>
 
-          <TouchableOpacity style={styles.explore}>
+          <TouchableOpacity style={styles.explore} onPress={() => navigation.navigate('ShopByCtg')}>
             <Text style={styles.exploreText}>Explore Categories</Text>
           </TouchableOpacity>
         </View>
