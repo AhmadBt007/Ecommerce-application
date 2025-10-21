@@ -6,7 +6,7 @@ import BrowseBtn from '../components/ExploreCategoriesButton'
 
 // images
 import Bell from '../assets/images/bell.png'
-const Notification = () => {
+const Notification = () => {``
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ alignItems: "center", flex: 0.5 }}>
